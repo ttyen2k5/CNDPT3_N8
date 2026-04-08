@@ -624,9 +624,9 @@ Webcam (hardware)
               │ Action: ~ Wave                             │
               │ Status: Tracking...                        │
               │                         ┌────────────────┐ │
-              │    [khung xương          │  GAME DEMO     │ │
-              │     trên người           │  Action: Wave  │ │
-              │     dùng]                │                │ │
+              │    [khung xương         │  GAME DEMO     │ │
+              │     trên người          │  Action: Wave  │ │
+              │     dùng]               │                │ │
               │                         │  ☺ ← nhân vật  │ │
               │                         │  vẫy tay       │ │
               │                         │                │ │

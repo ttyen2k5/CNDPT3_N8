@@ -1,4 +1,4 @@
-"""Cau hinh chung cho he thong Action Recognition VR - 6 hanh dong."""
+"""Cau hinh cho he thong Neon Runner - Pose Estimation."""
 
 # --- Camera ---
 CAMERA_ID = 0
@@ -6,61 +6,50 @@ CAMERA_WIDTH = 1280
 CAMERA_HEIGHT = 720
 
 # --- Display ---
-WINDOW_NAME = "VR Action Recognition System"
-GAME_PANEL_WIDTH = 400
+WINDOW_NAME = "Neon Runner - Pose Estimation"
 FPS_SMOOTHING = 0.9
 SHOW_DEBUG = True
+
+# Camera PIP (picture-in-picture)
+PIP_WIDTH = 320
+PIP_HEIGHT = 180
+PIP_MARGIN = 15
 
 # --- Pose Estimation (MediaPipe Tasks API) ---
 POSE_MIN_DETECTION_CONFIDENCE = 0.5
 POSE_MIN_TRACKING_CONFIDENCE = 0.5
 
-# --- Action Recognition ---
+# --- Action Recognition (2 hanh dong: Jump + Bend) ---
 ACTION_HOLD_FRAMES = 2
-
-# Raise Hand (gio tay)
-RAISE_HAND_THRESHOLD = 0.10
-
-# Wave (vay tay)
-WAVE_HISTORY_SIZE = 25
-WAVE_MIN_SIGN_CHANGES = 2
-WAVE_DEAD_ZONE = 0.002
-WAVE_MIN_RANGE = 0.018
-WAVE_STICKY_FRAMES = 15
-
-# Walking (di bo)
-WALK_MIN_ANKLE_RANGE = 0.02
-WALK_MAX_ANKLE_RANGE = 0.055
-WALK_MIN_ALTERNATIONS = 2
-WALK_SIGN_THRESHOLD = 0.008
-
-# Jump (nhay)
 JUMP_HISTORY_SIZE = 20
-JUMP_MIN_RISE = 0.04
-
-# Bend (cui nguoi)
+JUMP_MIN_RISE = 0.06
 BEND_HEIGHT_RATIO = 1.35
 
-# Running (chay tai cho)
-RUN_HISTORY_SIZE = 30
-RUN_MIN_ALTERNATIONS = 3
-RUN_MIN_ANKLE_RANGE = 0.055
-RUN_SIGN_THRESHOLD = 0.015
-RUN_MIN_SPEED = 0.008
+# --- Game ---
+GROUND_Y = 550
+RUNNER_X = 100
+GRAVITY = 1.5
+JUMP_VELOCITY = -20
+INITIAL_SPEED = 6
+MAX_SPEED = 16
+SPEED_INCREMENT = 0.003
+OBSTACLE_MIN_GAP = 300
+OBSTACLE_MAX_GAP = 600
+GAME_OVER_RESTART_FRAMES = 60
+DRONE_MIN_SPEED = 6.5
 
-# --- Game Character ---
-CHAR_GROUND_Y = 350
-CHAR_X = 200
-CHAR_JUMP_VELOCITY = -15
-CHAR_GRAVITY = 1
-CHAR_RUN_SPEED = 3
-CHAR_WALK_SPEED = 1
-CHAR_COLOR = (0, 255, 100)
-GAME_BG_COLOR = (30, 30, 50)
+# --- Colors (Neon / Cyberpunk) ---
+GAME_BG_COLOR = (35, 10, 20)
+COLOR_RUNNER = (255, 255, 0)
+COLOR_VISOR = (200, 50, 255)
+COLOR_BARRIER = (255, 0, 255)
+COLOR_DRONE = (0, 165, 255)
+COLOR_GROUND = (100, 255, 0)
+COLOR_SCORE = (255, 255, 255)
+COLOR_GAME_OVER = (80, 80, 255)
 
-# --- UI Colors ---
+# --- UI Overlay ---
 COLOR_ACTION = (0, 255, 255)
 COLOR_FPS = (0, 200, 0)
 COLOR_STATUS = (200, 200, 200)
 COLOR_TITLE = (255, 255, 255)
-COLOR_PANEL_BG = (20, 20, 40)

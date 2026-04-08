@@ -1,14 +1,11 @@
 """
-VR Action Recognition System - 10 Actions
-===========================================
-Camera -> Pose Estimation -> Action Recognition -> Game Control -> Display
+Neon Runner - Pose Estimation Game
+====================================
+Camera -> Pose Estimation -> Action Recognition -> Game -> Display
 
 Actions:
-  Raise Hand -> jump       |  Wave    -> menu
-  T-Pose     -> shield     |  Punch   -> attack
-  Kick       -> kick       |  Pick Up -> collect item
-  Running    -> run fast   |  Walking -> walk slow
-  Jump       -> high jump  |  Bend    -> bend down
+  Jump  -> Nhan vat nhay qua chuong ngai vat
+  Bend  -> Nhan vat cui ne drone
 
 Press ESC to quit.  Press D to toggle debug overlay.
 """
@@ -23,7 +20,7 @@ from modules import Camera, PoseEstimator, ActionRecognizer, GameController, UIO
 
 
 def draw_debug(frame, debug_info, action):
-    """Draw debug panel on bottom-left of camera frame."""
+    """Draw debug panel on bottom-left of frame."""
     h, w = frame.shape[:2]
     x0, y0 = 10, h - 20 * (len(debug_info) + 1) - 10
 
@@ -31,7 +28,7 @@ def draw_debug(frame, debug_info, action):
     cv2.rectangle(overlay, (0, y0 - 5), (320, h), (0, 0, 0), -1)
     cv2.addWeighted(overlay, 0.65, frame, 0.35, 0, frame)
 
-    cv2.putText(frame, f"[DEBUG] raw={action}", (x0, y0),
+    cv2.putText(frame, f"[DEBUG] action={action}", (x0, y0),
                 cv2.FONT_HERSHEY_SIMPLEX, 0.45, (0, 200, 255), 1)
     for i, (k, v) in enumerate(debug_info.items()):
         ty = y0 + 20 * (i + 1)
@@ -43,18 +40,18 @@ def main():
     camera = Camera()
     pose_estimator = PoseEstimator()
     action_recognizer = ActionRecognizer()
-    game = GameController(panel_height=config.CAMERA_HEIGHT)
+    game = GameController(panel_width=config.CAMERA_WIDTH,
+                          panel_height=config.CAMERA_HEIGHT)
     ui = UIOverlay()
     show_debug = config.SHOW_DEBUG
 
     try:
         camera.open()
-        print("[OK] Camera opened successfully.")
     except RuntimeError as e:
         print(f"[ERROR] {e}")
         sys.exit(1)
 
-    print("[OK] System ready. Press ESC to quit, D to toggle debug.")
+    print("[OK] Neon Runner ready. Press ESC to quit, D to toggle debug.")
     prev_time = time.time()
 
     try:
@@ -66,37 +63,39 @@ def main():
 
             frame = cv2.flip(frame, 1)
 
-            # Pose Estimation
             keypoints, annotated_frame = pose_estimator.process(frame)
             tracking = len(keypoints) > 0
-
-            # Action Recognition
             action = action_recognizer.recognize(keypoints)
 
-            # Debug overlay
-            if show_debug and tracking:
-                debug_info = action_recognizer.get_debug_info(keypoints)
-                draw_debug(annotated_frame, debug_info, action)
-
-            # Game update
             game.update(action)
             game_panel = game.draw()
 
-            # UI overlay
             now = time.time()
             fps = 1.0 / max(now - prev_time, 1e-6)
             prev_time = now
 
-            display_frame = ui.draw(annotated_frame, action, fps, tracking)
+            cam_display = ui.draw(annotated_frame, action, fps, tracking)
 
-            # Combine camera + game panel
-            cam_h, cam_w = display_frame.shape[:2]
-            game_h, game_w = game_panel.shape[:2]
-            if game_h != cam_h:
-                game_panel = cv2.resize(game_panel, (game_w, cam_h))
+            pip_w = config.PIP_WIDTH
+            pip_h = config.PIP_HEIGHT
+            margin = config.PIP_MARGIN
+            pip = cv2.resize(cam_display, (pip_w, pip_h))
 
-            combined = np.hstack([display_frame, game_panel])
-            cv2.imshow(config.WINDOW_NAME, combined)
+            gp_h, gp_w = game_panel.shape[:2]
+            px = gp_w - pip_w - margin
+            py = 65
+
+            cv2.rectangle(game_panel,
+                          (px - 2, py - 2),
+                          (px + pip_w + 1, py + pip_h + 1),
+                          config.COLOR_RUNNER, 2)
+            game_panel[py:py + pip_h, px:px + pip_w] = pip
+
+            if show_debug and tracking:
+                debug_info = action_recognizer.get_debug_info(keypoints)
+                draw_debug(game_panel, debug_info, action)
+
+            cv2.imshow(config.WINDOW_NAME, game_panel)
 
             key = cv2.waitKey(1) & 0xFF
             if key == 27:
