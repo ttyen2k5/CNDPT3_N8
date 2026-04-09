@@ -46,15 +46,24 @@ def _ensure_model():
 class PoseEstimator:
     """Sử dụng MediaPipe PoseLandmarker (Tasks API) để nhận diện keypoints."""
 
-    LANDMARK_NAMES = {
-        0: "nose",
-        11: "left_shoulder", 12: "right_shoulder",
-        13: "left_elbow", 14: "right_elbow",
-        15: "left_wrist", 16: "right_wrist",
-        23: "left_hip", 24: "right_hip",
-        25: "left_knee", 26: "right_knee",
-        27: "left_ankle", 28: "right_ankle",
-    }
+    LANDMARK_NAMES = [
+        "nose",
+        "left_eye_inner", "left_eye", "left_eye_outer",
+        "right_eye_inner", "right_eye", "right_eye_outer",
+        "left_ear", "right_ear",
+        "mouth_left", "mouth_right",
+        "left_shoulder", "right_shoulder",
+        "left_elbow", "right_elbow",
+        "left_wrist", "right_wrist",
+        "left_pinky", "right_pinky",
+        "left_index", "right_index",
+        "left_thumb", "right_thumb",
+        "left_hip", "right_hip",
+        "left_knee", "right_knee",
+        "left_ankle", "right_ankle",
+        "left_heel", "right_heel",
+        "left_foot_index", "right_foot_index",
+    ]
 
     def __init__(self):
         _ensure_model()
@@ -95,7 +104,7 @@ class PoseEstimator:
 
             self._draw_landmarks(annotated, landmarks)
 
-            for idx, name in self.LANDMARK_NAMES.items():
+            for idx, name in enumerate(self.LANDMARK_NAMES):
                 lm = landmarks[idx]
                 keypoints[name] = (lm.x, lm.y, lm.z, lm.visibility)
 
