@@ -160,11 +160,13 @@ class GameController:
         cv2.putText(panel, f"Score: {self.score}", (10, 50),
                     cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 255), 1)
 
-        # Lives as hearts
-        for i in range(self.lives):
-            hx = self.panel_w - 30 - i * 25
-            cv2.putText(panel, "<3", (hx, 25),
-                        cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
+        # Lives as hearts (left side, next to score)
+        max_lives = 3
+        for i in range(max_lives):
+            hx = 140 + i * 25
+            hy = 45
+            alive = i < self.lives
+            self._draw_heart(panel, hx, hy, size=9, alive=alive)
 
         # Action indicator
         action_color = (0, 255, 255) if self.current_action == "Idle" else \
@@ -235,6 +237,33 @@ class GameController:
 
         cv2.line(panel, (cx, cy + 40), (cx - 15, cy + 60), c, 2)
         cv2.line(panel, (cx, cy + 40), (cx + 15, cy + 60), c, 2)
+
+    def _draw_heart(self, panel, cx, cy, size=10, alive=True):
+        s = size
+        pts = np.array([
+            [cx, cy + s],
+            [cx - s, cy],
+            [cx - s, cy - int(s * 0.5)],
+            [cx - int(s * 0.6), cy - s],
+            [cx - int(s * 0.2), cy - s],
+            [cx, cy - int(s * 0.5)],
+            [cx + int(s * 0.2), cy - s],
+            [cx + int(s * 0.6), cy - s],
+            [cx + s, cy - int(s * 0.5)],
+            [cx + s, cy],
+        ], dtype=np.int32)
+
+        if alive:
+            cv2.fillPoly(panel, [pts], (0, 0, 220))
+            cv2.polylines(panel, [pts], True, (0, 0, 255), 1)
+            highlight = np.array([
+                [cx - int(s * 0.5), cy - int(s * 0.6)],
+                [cx - int(s * 0.3), cy - int(s * 0.8)],
+                [cx - int(s * 0.1), cy - int(s * 0.6)],
+            ], dtype=np.int32)
+            cv2.fillPoly(panel, [highlight], (80, 80, 255))
+        else:
+            cv2.polylines(panel, [pts], True, (80, 80, 80), 1)
 
     def _draw_game_over(self, panel):
         overlay = panel.copy()
